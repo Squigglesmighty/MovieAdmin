@@ -1,4 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("MovieAdminContext") ?? throw new InvalidOperationException("Connection string 'MovieAdminContext' not found.");
+
+builder.Services.AddDbContext<MovieAdminContext>(options => options.UseSqlServer(connectionString));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

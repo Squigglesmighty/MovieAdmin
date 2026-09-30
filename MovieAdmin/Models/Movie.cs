@@ -1,22 +1,34 @@
-﻿namespace MovieAdmin.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MovieAdmin.Models
 {
     public class Movie
     {
         public int Id { get; set; }
 
+        [Display(Name ="Title")]
+        [MaxLength(500)]
+        [Required]
         public string Title { get; set; } = string.Empty;
 
-        public string Description { get; set; } = string.Empty;
+        [MaxLength(1000)]
+        [Required]
+        public string Synopsis { get; set; } = string.Empty;
 
+        [Required]
         public string Genre { get; set; } = string.Empty;
 
-        public int RunTime { get; set; }
+        [Required]
+        public string Rating { get; set; } = string.Empty;
 
-        public DateTime ReleaseDate { get; set; } //First put string then forgot i learned about DateTime
+        [Required]
+        public int Runtime { get; set; }
 
-        public bool NewRelease { get; set; } // First put string AGAIN but remembered its only a true or false so bool was the correct type
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
 
-        public float Rating { get; set; } //First put int but didnt consider ratings being outside of whole numbers so changed to float
+        [Display(Name = "Released")]
+        [Required]
+        public DateTime ReleaseDate { get; set; }
 
 
     }
