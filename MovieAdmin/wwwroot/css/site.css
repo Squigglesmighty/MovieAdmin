@@ -29,3 +29,22 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+body {
+    background-color:#2d1b4e;
+    color: #eddada;
+}
+
+.navbar {
+    background-color: #1a0e2e !important;
+    color: #eddada;
+}
+
+.table thead {
+    color: #2d1b4e !important;
+
+}
+
+.table {
+    color: #2d1b4e !important;
+}

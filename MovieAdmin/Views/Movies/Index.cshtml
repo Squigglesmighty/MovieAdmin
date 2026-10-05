@@ -41,7 +41,7 @@
                     @Html.DisplayFor(model => item.Genre)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => item.Runtime)
+                    @(item.Runtime / 60)h @(item.Runtime % 60)m
                 </td>
                 <td>
                     @Html.DisplayFor(model => item.ReleaseDate)

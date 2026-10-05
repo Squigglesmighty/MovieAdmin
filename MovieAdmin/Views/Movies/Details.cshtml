@@ -38,7 +38,7 @@
             @Html.DisplayNameFor(model => model.Runtime)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Runtime)
+            @(Model.Runtime / 60)h @(Model.Runtime % 60)m // Show runtime in Hours and Mins
         </dd>
     </dl>
     <dl class="row">
