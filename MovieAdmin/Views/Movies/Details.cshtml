@@ -8,6 +8,7 @@
 
 <div>
     <h4>Movie</h4>
+    <img src="@Model.ImageUrl" width="400" />
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -38,7 +39,7 @@
             @Html.DisplayNameFor(model => model.Runtime)
         </dt>
         <dd class="col-sm-10">
-            @(Model.Runtime / 60)h @(Model.Runtime % 60)m // Show runtime in Hours and Mins
+            @(Model.Runtime / 60)h @(Model.Runtime % 60)m
         </dd>
     </dl>
     <dl class="row">

@@ -25,11 +25,11 @@ namespace MovieAdmin.Models
         public int Runtime { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-
         [Display(Name = "Released")]
         [Required]
         public DateTime ReleaseDate { get; set; }
 
+        public string? ImageUrl { get; set; }
 
     }
 }

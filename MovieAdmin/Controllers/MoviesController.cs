@@ -3,15 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MovieAdmin.Models;
+using MovieAdmin.Services;
 
 
 public class MoviesController : Controller
 {
     private readonly MovieAdminContext _context;
+    private readonly IAzureStorageService _azureStorage;
 
-    public MoviesController(MovieAdminContext context)
+    public MoviesController(MovieAdminContext context, IAzureStorageService azureStorage)
     {
         _context = context;
+        _azureStorage = azureStorage;
     }
 
     // GET: MOVIES/Index
@@ -52,10 +55,22 @@ public class MoviesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Title,Synopsis,Genre,Runtime,ReleaseDate,Rating")] Movie movie)
+    public async Task<IActionResult> Create([Bind("Id,Title,Synopsis,Genre,Runtime,ReleaseDate,Rating")] Movie movie, IFormFile? ImageUpload)
     {
         if (ModelState.IsValid)
         {
+
+            // Upload file to Azure Stroage (after input validation occurs)
+            if (ImageUpload != null)
+            {
+                string filename = ImageUpload.FileName;
+                string url = await _azureStorage.UploadFileAsync(ImageUpload, filename);
+
+                movie.ImageUrl = url;
+            }
+
+
+
             _context.Add(movie);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
