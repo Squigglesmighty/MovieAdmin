@@ -8,13 +8,15 @@ namespace MovieAdmin.Models
         public int Id { get; set; }
 
         //Foreign Key
+        [Display(Name = "Genre")]
         public int GenreId { get; set; }
 
         // navigation property
-       
+
         [ValidateNever]
         public Genre Genre { get; set; } = null!;
 
+        [Display(Name = "Audience Rating")]
         public int AudienceRatingId { get; set; }
 
         [ValidateNever]

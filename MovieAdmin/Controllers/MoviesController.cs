@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MovieAdmin.Models;
@@ -47,6 +48,9 @@ public class MoviesController : Controller
     // GET: MOVIES/Create
     public IActionResult Create()
     {
+        ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Title");
+        ViewData["AudienceRatingId"] = new SelectList(_context.AudienceRating, "Id", "Title");
+
         return View();
     }
 
@@ -55,7 +59,7 @@ public class MoviesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Title,Synopsis,Genre,Runtime,ReleaseDate")] Movie movie, IFormFile? ImageUpload)
+    public async Task<IActionResult> Create([Bind("Id,Title,Synopsis,GenreId,AudienceRatingId,Runtime,ReleaseDate")] Movie movie, IFormFile? ImageUpload)
     {
         if (ModelState.IsValid)
         {
@@ -99,7 +103,7 @@ public class MoviesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,Title,Synopsis,Genre,Runtime,ReleaseDate")] Movie movie)
+    public async Task<IActionResult> Edit(int? id, [Bind("Id,Title,Synopsis,GenreId,AudienceRatingId,Runtime,ReleaseDate")] Movie movie)
     {
         if (id != movie.Id)
         {
