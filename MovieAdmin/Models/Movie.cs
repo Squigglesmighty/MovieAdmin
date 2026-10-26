@@ -1,10 +1,26 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace MovieAdmin.Models
 {
     public class Movie
     {
         public int Id { get; set; }
+
+        //Foreign Key
+        public int GenreId { get; set; }
+
+        // navigation property
+       
+        [ValidateNever]
+        public Genre Genre { get; set; } = null!;
+
+        public int AudienceRatingId { get; set; }
+
+        [ValidateNever]
+        public AudienceRating AudienceRating { get; set; } = null!;
+
+
 
         [Display(Name ="Title")]
         [MaxLength(500)]
@@ -14,12 +30,6 @@ namespace MovieAdmin.Models
         [MaxLength(1000)]
         [Required]
         public string Synopsis { get; set; } = string.Empty;
-
-        [Required]
-        public string Genre { get; set; } = string.Empty;
-
-        [Required]
-        public string Rating { get; set; } = string.Empty;
 
         [Required]
         public int Runtime { get; set; }
