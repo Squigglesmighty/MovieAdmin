@@ -14,5 +14,6 @@ namespace MovieAdmin.Models
 
         [Required]
         public string Title { get; set; } = string.Empty;
+
     }
 }

@@ -1,8 +1,10 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieAdmin.Models;
 
+[Authorize]
 public class GenresController : Controller
 {
     private readonly MovieAdminContext _context;
@@ -13,12 +15,14 @@ public class GenresController : Controller
     }
 
     // GET: GENRES
+    [Authorize(Roles = "Administrator, Critic")]
     public async Task<IActionResult> Index()    
     {
         return View(await _context.Genre.ToListAsync());
     }
 
     // GET: GENRES/Details/5
+    [Authorize(Roles = "Administrator, Critic")]
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -37,6 +41,7 @@ public class GenresController : Controller
     }
 
     // GET: GENRES/Create
+    [Authorize(Roles = "Administrator")]
     public IActionResult Create()
     {
         return View();
@@ -47,7 +52,8 @@ public class GenresController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Movies,Title")] Genre genre)
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> Create([Bind("Id,Title")] Genre genre)
     {
         if (ModelState.IsValid)
         {
@@ -59,6 +65,7 @@ public class GenresController : Controller
     }
 
     // GET: GENRES/Edit/5
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -79,6 +86,7 @@ public class GenresController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Edit(int? id, [Bind("Id, Title")] Genre genre)
     {
         if (id != genre.Id)
@@ -110,6 +118,7 @@ public class GenresController : Controller
     }
 
     // GET: GENRES/Delete/5
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
@@ -130,6 +139,7 @@ public class GenresController : Controller
     // POST: GENRES/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteConfirmed(int? id)
     {
         var genre = await _context.Genre.FindAsync(id);

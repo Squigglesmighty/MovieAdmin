@@ -1,4 +1,4 @@
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using MovieAdmin.Models;
 using MovieAdmin.Services;
 
-
+[Authorize(Roles = "Administrator, Critic")]
 public class MoviesController : Controller
 {
     private readonly MovieAdminContext _context;
@@ -19,15 +19,18 @@ public class MoviesController : Controller
     }
 
     // GET: MOVIES/Index
-    public async Task<IActionResult> Index()    
+    [Authorize(Roles = "Administrator, Critic")]
+    public async Task<IActionResult> Index()
     {
         return View(await _context.Movie
+            .Include(m => m.Genre)
+            .Include(m => m.AudienceRating)
             .OrderBy(t => t.ReleaseDate)
             .ToListAsync());
-        
     }
 
     // GET: MOVIES/Details/5
+    [Authorize(Roles = "Administrator, Critic")]
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -36,6 +39,8 @@ public class MoviesController : Controller
         }
 
         var movie = await _context.Movie
+            .Include(m => m.Genre)
+            .Include(m => m.AudienceRating)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (movie == null)
         {
@@ -46,6 +51,7 @@ public class MoviesController : Controller
     }
 
     // GET: MOVIES/Create
+    [Authorize(Roles = "Administrator")]
     public IActionResult Create()
     {
         ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Title");
@@ -55,16 +61,14 @@ public class MoviesController : Controller
     }
 
     // POST: MOVIES/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Create([Bind("Id,Title,Synopsis,GenreId,AudienceRatingId,Runtime,ReleaseDate")] Movie movie, IFormFile? ImageUpload)
     {
         if (ModelState.IsValid)
         {
-
-            // Upload file to Azure Stroage (after input validation occurs)
+            // Upload file to Azure Storage (after input validation occurs)
             if (ImageUpload != null)
             {
                 string filename = ImageUpload.FileName;
@@ -73,16 +77,18 @@ public class MoviesController : Controller
                 movie.ImageUrl = url;
             }
 
-
-
             _context.Add(movie);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Title", movie.GenreId);
+        ViewData["AudienceRatingId"] = new SelectList(_context.AudienceRating, "Id", "Title", movie.AudienceRatingId);
         return View(movie);
     }
 
     // GET: MOVIES/Edit/5
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -95,15 +101,16 @@ public class MoviesController : Controller
         {
             return NotFound();
         }
+        ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Title", movie.GenreId);
+        ViewData["AudienceRatingId"] = new SelectList(_context.AudienceRating, "Id", "Title", movie.AudienceRatingId);
         return View(movie);
     }
 
     // POST: MOVIES/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,Title,Synopsis,GenreId,AudienceRatingId,Runtime,ReleaseDate")] Movie movie)
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> Edit(int? id, [Bind("Id,Title,Synopsis,GenreId,AudienceRatingId,Runtime,ReleaseDate,ImageUrl")] Movie movie, IFormFile? ImageUpload)
     {
         if (id != movie.Id)
         {
@@ -112,6 +119,14 @@ public class MoviesController : Controller
 
         if (ModelState.IsValid)
         {
+            if (ImageUpload != null)
+            {
+                string filename = ImageUpload.FileName;
+                string url = await _azureStorage.UploadFileAsync(ImageUpload, filename);
+
+                movie.ImageUrl = url;
+            }
+
             try
             {
                 _context.Update(movie);
@@ -130,10 +145,13 @@ public class MoviesController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
+        ViewData["GenreId"] = new SelectList(_context.Genre, "Id", "Title", movie.GenreId);
+        ViewData["AudienceRatingId"] = new SelectList(_context.AudienceRating, "Id", "Title", movie.AudienceRatingId);
         return View(movie);
     }
 
     // GET: MOVIES/Delete/5
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
@@ -142,6 +160,8 @@ public class MoviesController : Controller
         }
 
         var movie = await _context.Movie
+            .Include(m => m.Genre)
+            .Include(m => m.AudienceRating)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (movie == null)
         {
@@ -154,6 +174,7 @@ public class MoviesController : Controller
     // POST: MOVIES/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteConfirmed(int? id)
     {
         var movie = await _context.Movie.FindAsync(id);

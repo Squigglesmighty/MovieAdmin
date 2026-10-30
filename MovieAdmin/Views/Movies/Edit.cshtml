@@ -10,9 +10,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageUrl" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -24,11 +25,6 @@
                 <span asp-validation-for="Synopsis" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Genre" class="control-label"></label>
-                <input asp-for="Genre" class="form-control" />
-                <span asp-validation-for="Genre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Runtime" class="control-label"></label>
                 <input asp-for="Runtime" class="form-control" />
                 <span asp-validation-for="Runtime" class="text-danger"></span>
@@ -37,6 +33,20 @@
                 <label asp-for="ReleaseDate" class="control-label"></label>
                 <input asp-for="ReleaseDate" class="form-control" />
                 <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GenreId" class="control-label"></label>
+                <select asp-for="GenreId" asp-items="ViewBag.GenreId" class="form-control"></select>
+                <span asp-validation-for="GenreId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AudienceRatingId" class="control-label"></label>
+                <select asp-for="AudienceRatingId" asp-items="ViewBag.AudienceRatingId" class="form-control"></select>
+                <span asp-validation-for="AudienceRatingId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Poster</label>
+                <input type="file" name="ImageUpload" class="form-control" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
